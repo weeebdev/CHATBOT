@@ -17,6 +17,47 @@ const bot = new TelegramBot(TOKEN, {
   }
 });
 
+const covid_symptoms = {
+  fever: "Часто",
+  cough: "Почти всегда",
+  weakness: "Часто",
+  shortness_of_breath: "Может быть",
+  headache: "Редко",
+  body_aches: "Редко",
+  sore_throat: "Редко",
+  chills: "Редко",
+  runny_nose: "Практически нет",
+  sneezing: "Не характерно"
+};
+
+const symptoms_number = Object.keys(covid_symptoms).length;
+
+const cold_symptoms = {
+  fever: "Редко",
+  cough: "Иногда",
+  weakness: "Иногда",
+  shortness_of_breath: "Нет",
+  headache: "Редко",
+  body_aches: "Иногда",
+  sore_throat: "Часто",
+  chills: "Редко",
+  runny_nose: "Часто",
+  sneezing: "Часто"
+};
+
+const flu_symptoms = {
+  fever: "Характерно",
+  cough: "Часто, сухой",
+  weakness: "Характерно",
+  shortness_of_breath: "Нет",
+  headache: "Часто",
+  body_aches: "Часто",
+  sore_throat: "Иногда",
+  chills: "Часто",
+  runny_nose: "Иногда",
+  sneezing: "Иногда"
+};
+
 console.log("Бот успешно запущен!");
 
 bot.on("message", msg => {
@@ -77,7 +118,19 @@ bot.on("message", msg => {
                 username: username,
                 date: new Date(date),
                 news_notification: true,
-                pharmacy_notification: true
+                pharmacy_notification: true,
+                corona_test: {
+                  fever: null,
+                  cough: null,
+                  weakness: null,
+                  shortness_of_breath: null,
+                  headache: null,
+                  body_aches: null,
+                  sore_throat: null,
+                  chills: null,
+                  runny_nose: null,
+                  sneezing: null
+                }
               })
               .then(() => {
                 console.log("User successfully added!");
@@ -99,11 +152,15 @@ bot.on("message", msg => {
       break;
     case "/test":
     case validation_txt:
-      bot.sendMessage(chatId, 'Начинаем диагностику...\nОтвечайте на вопросы только ответами, приведенными ниже\nЕсли вашего ответа нет, отвечайте "Нет"\nУ вас есть лихорадка?', {
-        reply_markup: {
-          inline_keyboard: keyboards.q1A
+      bot.sendMessage(
+        chatId,
+        'Начинаем диагностику...\nОтвечайте на вопросы только ответами, приведенными ниже\nЕсли вашего ответа нет, отвечайте "Нет"\nУ вас есть лихорадка?',
+        {
+          reply_markup: {
+            inline_keyboard: keyboards.q1A
+          }
         }
-      });
+      );
       break;
     case "/options":
     case option_txt:
@@ -178,7 +235,6 @@ bot.on("message", msg => {
 bot.on("callback_query", query => {
   const userId = query.from.id;
   const chatId = query.message.chat.id;
-  const messageId = query.message.message_id;
   console.log(query);
 
   userRef = db.collection("user_info").doc(String(userId));
@@ -329,40 +385,128 @@ bot.on("callback_query", query => {
         });
       break;
     default:
-      const {
-        symptom,
-        answer
-      } = JSON.parse(query.data);
+      const { symptom, answer } = JSON.parse(query.data);
       // parse data into firebase
       switch (symptom) {
         case kb.symptoms.fever:
+          userRef.set(
+            {
+              corona_test: { fever: answer }
+            },
+            { merge: true }
+          );
           sendQuestion(chatId, kb.symptoms.cough, keyboards.q2A);
           break;
         case kb.symptoms.cough:
+          userRef.set(
+            {
+              corona_test: { cough: answer }
+            },
+            { merge: true }
+          );
           sendQuestion(chatId, kb.symptoms.weakness, keyboards.q3A);
           break;
         case kb.symptoms.weakness:
+          userRef.set(
+            {
+              corona_test: { weakness: answer }
+            },
+            { merge: true }
+          );
           sendQuestion(chatId, kb.symptoms.shortness_of_breath, keyboards.q4A);
           break;
         case kb.symptoms.shortness_of_breath:
+          userRef.set(
+            {
+              corona_test: { shortness_of_breath: answer }
+            },
+            { merge: true }
+          );
           sendQuestion(chatId, kb.symptoms.headache, keyboards.q5A);
           break;
         case kb.symptoms.headache:
+          userRef.set(
+            {
+              corona_test: { headache: answer }
+            },
+            { merge: true }
+          );
           sendQuestion(chatId, kb.symptoms.body_aches, keyboards.q6A);
           break;
         case kb.symptoms.body_aches:
+          userRef.set(
+            {
+              corona_test: { body_aches: answer }
+            },
+            { merge: true }
+          );
           sendQuestion(chatId, kb.symptoms.sore_throat, keyboards.q7A);
           break;
         case kb.symptoms.sore_throat:
+          userRef.set(
+            {
+              corona_test: { sore_throat: answer }
+            },
+            { merge: true }
+          );
           sendQuestion(chatId, kb.symptoms.chills, keyboards.q8A);
           break;
         case kb.symptoms.chills:
+          userRef.set(
+            {
+              corona_test: { chills: answer }
+            },
+            { merge: true }
+          );
           sendQuestion(chatId, kb.symptoms.runny_nose, keyboards.q9A);
           break;
         case kb.symptoms.runny_nose:
+          userRef.set(
+            {
+              corona_test: { runny_nose: answer }
+            },
+            { merge: true }
+          );
           sendQuestion(chatId, kb.symptoms.sneezing, keyboards.q10A);
           break;
         case kb.symptoms.sneezing:
+          userRef.set(
+            {
+              corona_test: { sneezing: answer }
+            },
+            { merge: true }
+          );
+
+          let covid_score = 0;
+          let cold_score = 0;
+          let flu_score = 0;
+
+          console.log(userId);
+          userRef = db.collection("user_info").doc(String(userId));
+          userRef.get().then(snapshot => {
+            let test_results = snapshot.data().corona_test;
+            for (let key in test_results) {
+              if (covid_symptoms[key] == test_results[key]) {
+                covid_score++;
+              }
+              if (cold_symptoms[key] == test_results[key]) {
+                cold_score++;
+              }
+              if (flu_symptoms[key] == test_results[key]) {
+                flu_score++;
+              }
+            }
+
+            bot.sendMessage(
+              chatId,
+              `Ниже приведены результаты теста:\nКоронавирус: ${(covid_score *
+                100) /
+                symptoms_number}%\nПростуда: ${(cold_score * 100) /
+                symptoms_number}%\nГрипп: ${(flu_score * 100) /
+                symptoms_number}%\n\тВнимание, это всего лишь приблизительные результаты, мы настоятельно просим вас позвонить в скорую при подозрении на коронавирус!`
+            );
+          });
+
           // end
           break;
         default:
@@ -374,8 +518,6 @@ bot.on("callback_query", query => {
 
 async function updateNotification(user_id) {
   userRef = db.collection("user_info");
-  // Получить инфу с дб о нотификациях
-  // и в зависимости от этого делать дальше
   let news_notification, pharmacy_notification;
   docSnapshot = await userRef.doc(String(user_id)).get();
 
