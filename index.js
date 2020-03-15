@@ -17,42 +17,12 @@ const bot = new TelegramBot(TOKEN, {
 
 console.log("Бот успешно запущен!");
 
-<<<<<<< HEAD
-bot.onText(/\/start/, msg => {
-    bot.sendMessage(msg.chat.id, debug(msg));
-});
-
-bot.on('message', msg => {
-    const chatId = msg.chat.id;
-
-    const close_txt = 'Закрыть ❌';
-    const option_txt = 'Настройки ⚙️';
-    const validation_txt = 'Я могу быть заражен?🤧\nПроверить себя';
-    switch (msg.text) {
-        case '/start@kz_corona_bot':
-        case '/start':
-            bot.sendMessage(chatId, 'Здравствуйте! Я бот, который поможет вам узнавать всю актульную информацию о COVID-19\nВсе уведомления по умолчанию включены.', {
-                reply_markup: {
-                    inline_keyboard: [
-                        [{
-                            text: 'Выключить новости',
-                            callback_data: 'news_notification_false'
-                        }],
-                        [{
-                            text: 'Выключить уведомления\nо повышении цен в аптеках',
-                            callback_data: 'pharmacy_notification_false'
-                        }]
-                    ]
-                }
-            });
-=======
 bot.on("message", msg => {
   const chatId = msg.chat.id;
 
   const close_txt = "Закрыть ❌";
   const option_txt = "Настройки ⚙️";
   const validation_txt = "Я могу быть заражен?🤧\nПроверить себя";
->>>>>>> 887c0eb04b240bd5a0597e2dd7ea26f95d3be728
 
   const user_id = msg.from.id;
   const chat_id = msg.chat.id;
@@ -91,101 +61,13 @@ bot.on("message", msg => {
         username = null;
       }
 
-<<<<<<< HEAD
-            // bot.sendMessage(chatId, debug(msg));
-=======
       bot.sendMessage(chatId, debug(msg));
->>>>>>> 887c0eb04b240bd5a0597e2dd7ea26f95d3be728
 
       userRef
         .get()
         .then(snapshot => {
           if (!snapshot.exists) {
             userRef
-<<<<<<< HEAD
-                .get()
-                .then(snapshot => {
-                    if (!snapshot.exists) {
-                        userRef
-                            .set({
-                                user_id: user_id,
-                                chat_id: chat_id,
-                                first_name: first_name,
-                                username: username,
-                                date: new Date(date),
-                                news_notification: true,
-                                pharmacy_notification: true
-                            })
-                            .then(() => {
-                                console.log("User successfully added!");
-                            });
-                    } else {
-                        console.log("Already in database");
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                });
-            break;
-        case close_txt:
-            bot.sendMessage(chatId, 'Закрыто', {
-                reply_markup: {
-                    remove_keyboard: true
-                }
-            });
-            break;
-        case '/test@kz_corona_bot':
-        case '/test':
-        case validation_txt:
-
-            break;
-        case '/options@kz_corona_bot':
-        case '/options':
-        case option_txt:
-            // Получить инфу с дб о нотификациях
-            // и в зависимости от этого делать дальше
-            let news_notification_option = [];
-            let pharmacy_notification_option = [];
-            if (news_notification) {
-                news_notification_option = [{
-                    text: 'Выключить новости',
-                    callback_data: 'news_notification_false'
-                }];
-            } else {
-                news_notification_option = [{
-                    text: 'Включить новости',
-                    callback_data: 'news_notification_true'
-                }];
-            }
-
-            if (pharmacy_notification) {
-                pharmacy_notification_option = [{
-                    text: 'Выключить уведомления\ nо повышении цен в аптеках',
-                    callback_data: 'pharmacy_notification_false'
-                }];
-            } else {
-                pharmacy_notification_option = [{
-                    text: 'Включить уведомления\ nо повышении цен в аптеках',
-                    callback_data: 'pharmacy_notification_true'
-                }];
-            }
-            break;
-        case '/menu@kz_corona_bot':
-        case '/menu':
-            bot.sendMessage(chatId, 'Выберите действие', {
-                reply_markup: {
-                    keyboard: [
-                        [validation_txt],
-                        [option_txt],
-                        [close_txt]
-                    ],
-                    one_time_keyboard: true
-                }
-            });
-        default:
-            bot.sendMessage(chatId, 'Я вас не понимаю. Повторите запрос');
-    }
-=======
               .set({
                 user_id: user_id,
                 chat_id: chat_id,
@@ -243,7 +125,6 @@ bot.on("message", msg => {
           }
         ];
       }
->>>>>>> 887c0eb04b240bd5a0597e2dd7ea26f95d3be728
 
       if (pharmacy_notification) {
         pharmacy_notification_option = [
