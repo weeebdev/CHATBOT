@@ -6,13 +6,329 @@ module.exports = {
     q1A: [
         [{
                 text: kbo.often,
-                callback_data: `${kbs.fever}_${kbo.}`
+                callback_data: JSON.stringify({
+                    symptom: kbs.fever,
+                    answer: kbo.often
+                })
             },
             {
                 text: kbo.rarely,
-                callback_data: `${kbs.fever}_${kbo.}`
+                callback_data: JSON.stringify({
+                    symptom: kbs.fever,
+                    answer: kbo.rarely
+                })
             }
         ],
-        [kb.]
+        [{
+                text: kbo.typical,
+                callback_data: JSON.stringify({
+                    symptom: kbs.fever,
+                    answer: kbo.typical
+                })
+            },
+            {
+                text: kbo.no,
+                callback_data: JSON.stringify({
+                    symptom: kbs.fever,
+                    answer: kbo.no
+                })
+            }
+        ]
+    ],
+    q2A: [
+        [{
+                text: kbo.almost_always,
+                callback_data: JSON.stringify({
+                    symptom: kbs.cough,
+                    answer: kbo.almost_always
+                })
+            },
+            {
+                text: kbo.sometimes,
+                callback_data: JSON.stringify({
+                    symptom: kbs.cough,
+                    answer: kbo.sometimes
+                })
+            }
+        ],
+        [{
+                text: kbo.often_dry,
+                callback_data: JSON.stringify({
+                    symptom: kbs.cough,
+                    answer: kbo.often_dry
+                })
+            },
+            {
+                text: kbo.no,
+                callback_data: JSON.stringify({
+                    symptom: kbs.cough,
+                    answer: kbo.no
+                })
+            }
+        ]
+
+    ],
+    q3A: [
+        [{
+                text: kbo.often,
+                callback_data: JSON.stringify({
+                    symptom: kbs.weakness,
+                    answer: kbo.often
+                })
+            },
+            {
+                text: kbo.sometimes,
+                callback_data: JSON.stringify({
+                    symptom: kbs.weakness,
+                    answer: kbo.sometimes
+                })
+            }
+        ],
+        [{
+                text: kbo.typical,
+                callback_data: JSON.stringify({
+                    symptom: kbs.weakness,
+                    answer: kbo.typical
+                })
+            },
+            {
+                text: kbo.no,
+                callback_data: JSON.stringify({
+                    symptom: kbs.weakness,
+                    answer: kbo.no
+                })
+            }
+        ]
+
+    ],
+    q4A: [
+        [{
+                text: kbo.maybe,
+                callback_data: JSON.stringify({
+                    symptom: kbs.shortness_of_breath,
+                    answer: kbo.maybe
+                })
+            },
+            {
+                text: kbo.sometimes,
+                callback_data: JSON.stringify({
+                    symptom: kbs.shortness_of_breath,
+                    answer: kbo.sometimes
+                })
+            }
+        ],
+        [{
+                text: kbo.rarely,
+                callback_data: JSON.stringify({
+                    symptom: kbs.shortness_of_breath,
+                    answer: kbo.rarely
+                })
+            },
+            {
+                text: kbo.no,
+                callback_data: JSON.stringify({
+                    symptom: kbs.shortness_of_breath,
+                    answer: kbo.no
+                })
+            }
+        ]
+
+    ],
+    q5A: [
+        [{
+                text: kbo.rarely,
+                callback_data: JSON.stringify({
+                    symptom: kbs.headache,
+                    answer: kbo.rarely
+                })
+            },
+            {
+                text: kbo.sometimes,
+                callback_data: JSON.stringify({
+                    symptom: kbs.headache,
+                    answer: kbo.sometimes
+                })
+            }
+        ],
+        [{
+                text: kbo.often,
+                callback_data: JSON.stringify({
+                    symptom: kbs.headache,
+                    answer: kbo.often
+                })
+            },
+            {
+                text: kbo.no,
+                callback_data: JSON.stringify({
+                    symptom: kbs.headache,
+                    answer: kbo.no
+                })
+            }
+        ]
+
+    ],
+    q6A: [
+        [{
+                text: kbo.rarely,
+                callback_data: JSON.stringify({
+                    symptom: kbs.body_aches,
+                    answer: kbo.rarely
+                })
+            },
+            {
+                text: kbo.sometimes,
+                callback_data: JSON.stringify({
+                    symptom: kbs.body_aches,
+                    answer: kbo.sometimes
+                })
+            }
+        ],
+        [{
+                text: kbo.often,
+                callback_data: JSON.stringify({
+                    symptom: kbs.body_aches,
+                    answer: kbo.often
+                })
+            },
+            {
+                text: kbo.no,
+                callback_data: JSON.stringify({
+                    symptom: kbs.body_aches,
+                    answer: kbo.no
+                })
+            }
+        ]
+
+    ],
+    q7A: [
+        [{
+                text: kbo.rarely,
+                callback_data: JSON.stringify({
+                    symptom: kbs.sore_throat,
+                    answer: kbo.rarely
+                })
+            },
+            {
+                text: kbo.sometimes,
+                callback_data: JSON.stringify({
+                    symptom: kbs.sore_throat,
+                    answer: kbo.sometimes
+                })
+            }
+        ],
+        [{
+                text: kbo.often,
+                callback_data: JSON.stringify({
+                    symptom: kbs.sore_throat,
+                    answer: kbo.often
+                })
+            },
+            {
+                text: kbo.no,
+                callback_data: JSON.stringify({
+                    symptom: kbs.sore_throat,
+                    answer: kbo.no
+                })
+            }
+        ]
+
+    ],
+    q8A: [
+        [{
+                text: kbo.rarely,
+                callback_data: JSON.stringify({
+                    symptom: kbs.chills,
+                    answer: kbo.rarely
+                })
+            },
+            {
+                text: kbo.sometimes,
+                callback_data: JSON.stringify({
+                    symptom: kbs.chills,
+                    answer: kbo.sometimes
+                })
+            }
+        ],
+        [{
+                text: kbo.often,
+                callback_data: JSON.stringify({
+                    symptom: kbs.chills,
+                    answer: kbo.often
+                })
+            },
+            {
+                text: kbo.no,
+                callback_data: JSON.stringify({
+                    symptom: kbs.chills,
+                    answer: kbo.no
+                })
+            }
+        ]
+    ],
+    q9A: [
+        [{
+                text: kbo.almost_no,
+                callback_data: JSON.stringify({
+                    symptom: kbs.runny_nose,
+                    answer: kbo.almost_no
+                })
+            },
+            {
+                text: kbo.sometimes,
+                callback_data: JSON.stringify({
+                    symptom: kbs.runny_nose,
+                    answer: kbo.sometimes
+                })
+            }
+        ],
+        [{
+                text: kbo.often,
+                callback_data: JSON.stringify({
+                    symptom: kbs.runny_nose,
+                    answer: kbo.often
+                })
+            },
+            {
+                text: kbo.no,
+                callback_data: JSON.stringify({
+                    symptom: kbs.runny_nose,
+                    answer: kbo.no
+                })
+            }
+        ]
+
+    ],
+    q10A: [
+        [{
+                text: kbo.rarely,
+                callback_data: JSON.stringify({
+                    symptom: kbs.sneezing,
+                    answer: kbo.rarely
+                })
+            },
+            {
+                text: kbo.sometimes,
+                callback_data: JSON.stringify({
+                    symptom: kbs.sneezing,
+                    answer: kbo.sometimes
+                })
+            }
+        ],
+        [{
+                text: kbo.often,
+                callback_data: JSON.stringify({
+                    symptom: kbs.sneezing,
+                    answer: kbo.often
+                })
+            },
+            {
+                text: kbo.no,
+                callback_data: JSON.stringify({
+                    symptom: kbs.sneezing,
+                    answer: kbo.no
+                })
+            }
+        ]
+
     ]
-}
+};

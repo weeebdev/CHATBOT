@@ -5,10 +5,10 @@ module.exports = {
         sometimes: 'Иногда',
         typical: 'Характерно',
         no: 'Нет',
-        almost_always: 'Почти всегда, сухой',
+        almost_always: 'Почти всегда',
         often_dry: 'Часто, сухой',
         maybe: 'Может быть',
-        almost_no: 'Практически нет',
+        almost_no: 'Почти нет',
         no_typical: 'Не характерно'
     },
     symptoms: {
