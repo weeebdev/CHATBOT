@@ -4,7 +4,7 @@
   "description": "Чатбот для хакатона Anti-corona",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
