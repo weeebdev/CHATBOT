@@ -1,5 +1,5 @@
 const admin = require("firebase-admin");
-const serviceAccount = require("./corona-bot-b8b14-firebase-adminsdk-xmzha-e72a3a9c49.json");
+const serviceAccount = require("./coroba-dbo.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
