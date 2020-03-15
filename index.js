@@ -17,6 +17,10 @@ const bot = new TelegramBot(TOKEN, {
 
 console.log("Бот успешно запущен!");
 
+bot.onText(/\/start/, msg => {
+    bot.sendMessage(msg.chat.id, debug(msg));
+});
+
 bot.on('message', msg => {
     const chatId = msg.chat.id;
 
@@ -24,6 +28,7 @@ bot.on('message', msg => {
     const option_txt = 'Настройки ⚙️';
     const validation_txt = 'Я могу быть заражен?🤧\nПроверить себя';
     switch (msg.text) {
+        case '/start@kz_corona_bot':
         case '/start':
             bot.sendMessage(chatId, 'Здравствуйте! Я бот, который поможет вам узнавать всю актульную информацию о COVID-19\nВсе уведомления по умолчанию включены.', {
                 reply_markup: {
@@ -53,7 +58,7 @@ bot.on('message', msg => {
                 username = null;
             }
 
-            bot.sendMessage(chatId, debug(msg));
+            // bot.sendMessage(chatId, debug(msg));
 
             userRef
                 .get()
@@ -87,9 +92,12 @@ bot.on('message', msg => {
                 }
             });
             break;
+        case '/test@kz_corona_bot':
         case '/test':
         case validation_txt:
+
             break;
+        case '/options@kz_corona_bot':
         case '/options':
         case option_txt:
             // Получить инфу с дб о нотификациях
@@ -120,8 +128,8 @@ bot.on('message', msg => {
                 }];
             }
             break;
+        case '/menu@kz_corona_bot':
         case '/menu':
-        default:
             bot.sendMessage(chatId, 'Выберите действие', {
                 reply_markup: {
                     keyboard: [
@@ -132,6 +140,8 @@ bot.on('message', msg => {
                     one_time_keyboard: true
                 }
             });
+        default:
+            bot.sendMessage(chatId, 'Я вас не понимаю. Повторите запрос');
     }
 
 });
