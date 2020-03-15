@@ -87,8 +87,10 @@ bot.on('message', msg => {
                 }
             });
             break;
+        case '/test':
         case validation_txt:
             break;
+        case '/options':
         case option_txt:
             // Получить инфу с дб о нотификациях
             // и в зависимости от этого делать дальше
@@ -118,6 +120,7 @@ bot.on('message', msg => {
                 }];
             }
             break;
+        case '/menu':
         default:
             bot.sendMessage(chatId, 'Выберите действие', {
                 reply_markup: {
