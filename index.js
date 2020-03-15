@@ -31,11 +31,11 @@ bot.on('message', msg => {
                     inline_keyboard: [
                         [{
                             text: 'Выключить новости',
-                            callback_data: '1'
+                            callback_data: 'news_notification_false'
                         }],
                         [{
                             text: 'Выключить уведомления\nо повышении цен в аптеках',
-                            callback_data: '2'
+                            callback_data: 'pharmacy_notification_false'
                         }]
                     ]
                 }
@@ -57,9 +57,6 @@ bot.on('message', msg => {
             data.username = msg.from.username;
             console.log(data);
             break;
-            // case '/show_info':
-            //     bot.sendMessage(chatId, debug(data));
-            //     break;
         case close_txt:
             bot.sendMessage(chatId, 'Закрыто', {
                 reply_markup: {
@@ -70,6 +67,33 @@ bot.on('message', msg => {
         case validation_txt:
             break;
         case option_txt:
+            // Получить инфу с дб о нотификациях
+            // и в зависимости от этого делать дальше
+            let news_notification_option = [];
+            let pharmacy_notification_option = [];
+            if (news_notification) {
+                news_notification_option = [{
+                    text: 'Выключить новости',
+                    callback_data: 'news_notification_false'
+                }];
+            } else {
+                news_notification_option = [{
+                    text: 'Включить новости',
+                    callback_data: 'news_notification_true'
+                }];
+            }
+
+            if (pharmacy_notification) {
+                pharmacy_notification_option = [{
+                    text: 'Выключить уведомления\ nо повышении цен в аптеках',
+                    callback_data: 'pharmacy_notification_false'
+                }];
+            } else {
+                pharmacy_notification_option = [{
+                    text: 'Включить уведомления\ nо повышении цен в аптеках',
+                    callback_data: 'pharmacy_notification_true'
+                }];
+            }
             break;
         default:
             bot.sendMessage(chatId, 'Выберите действие', {
@@ -87,5 +111,27 @@ bot.on('message', msg => {
 });
 
 bot.on('callback_query', query => {
-    bot.sendMessage(query.message.chat.id, debug(query));
+    const userId = query.message.from.id;
+    const chatId = query.message.chat.id;
+    switch (query.data) {
+        case 'news_notification_false':
+            // set to false
+            bot.sendMessage(chatId, 'Уведомления о новостях выключены')
+            break;
+        case 'pharmacy_notification_false':
+            // set to false
+            bot.sendMessage(chatId, 'Уведомления о повышении цен в аптеках выключены')
+            break;
+        case 'news_notification_true':
+            // set to true
+            bot.sendMessage(chatId, 'Уведомления о новостях включены')
+            break;
+        case 'pharmacy_notification_true':
+            // set to true
+            bot.sendMessage(chatId, 'Уведомления о повышении цен в аптеках включены')
+            break;
+        default:
+            console.error('???');
+            break;
+    }
 });
