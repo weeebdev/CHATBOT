@@ -18,6 +18,11 @@
   "homepage": "https://github.com/AlphaKennyBudy/CHATBOT#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "firebase": "^7.11.0",
     "node-telegram-bot-api": "^0.40.0"
+  },
+  "devDependencies": {
+    "firebase-admin": "^8.10.0",
+    "nodemon": "^2.0.2"
   }
 }
