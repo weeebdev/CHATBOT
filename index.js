@@ -1,7 +1,5 @@
-/* jshint esversion:6 */
-
 require("dotenv").config();
-let db = require("./database.js");
+let db = requirWe("./database.js");
 const TelegramBot = require("node-telegram-bot-api");
 const debug = require("./helpers");
 
