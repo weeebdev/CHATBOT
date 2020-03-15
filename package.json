@@ -1,0 +1,23 @@
+{
+  "name": "corona-bot",
+  "version": "1.0.0",
+  "description": "Чатбот для хакатона Anti-corona",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlphaKennyBudy/CHATBOT.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlphaKennyBudy/CHATBOT/issues"
+  },
+  "homepage": "https://github.com/AlphaKennyBudy/CHATBOT#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "node-telegram-bot-api": "^0.40.0"
+  }
+}
