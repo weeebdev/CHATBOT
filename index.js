@@ -2,6 +2,8 @@ require("dotenv").config();
 let db = require("./database.js");
 const TelegramBot = require("node-telegram-bot-api");
 const debug = require("./helpers");
+const keyboards = require("./keyboards");
+const kb = require("./keyboard_buttons");
 
 const TOKEN = process.env.TOKEN;
 
@@ -97,6 +99,11 @@ bot.on("message", msg => {
       break;
     case "/test":
     case validation_txt:
+      bot.sendMessage(chatId, 'Начинаем диагностику...\nОтвечайте на вопросы только ответами, приведенными ниже\nЕсли вашего ответа нет, отвечайте "Нет"\nУ вас есть лихорадка?', {
+        reply_markup: {
+          inline_keyboard: keyboards.q1A
+        }
+      });
       break;
     case "/options":
     case option_txt:
@@ -322,7 +329,45 @@ bot.on("callback_query", query => {
         });
       break;
     default:
-      console.error("???");
+      const {
+        symptom,
+        answer
+      } = JSON.parse(query.data);
+      // parse data into firebase
+      switch (symptom) {
+        case kb.symptoms.fever:
+          sendQuestion(chatId, kb.symptoms.cough, keyboards.q2A);
+          break;
+        case kb.symptoms.cough:
+          sendQuestion(chatId, kb.symptoms.weakness, keyboards.q3A);
+          break;
+        case kb.symptoms.weakness:
+          sendQuestion(chatId, kb.symptoms.shortness_of_breath, keyboards.q4A);
+          break;
+        case kb.symptoms.shortness_of_breath:
+          sendQuestion(chatId, kb.symptoms.headache, keyboards.q5A);
+          break;
+        case kb.symptoms.headache:
+          sendQuestion(chatId, kb.symptoms.body_aches, keyboards.q6A);
+          break;
+        case kb.symptoms.body_aches:
+          sendQuestion(chatId, kb.symptoms.sore_throat, keyboards.q7A);
+          break;
+        case kb.symptoms.sore_throat:
+          sendQuestion(chatId, kb.symptoms.chills, keyboards.q8A);
+          break;
+        case kb.symptoms.chills:
+          sendQuestion(chatId, kb.symptoms.runny_nose, keyboards.q9A);
+          break;
+        case kb.symptoms.runny_nose:
+          sendQuestion(chatId, kb.symptoms.sneezing, keyboards.q10A);
+          break;
+        case kb.symptoms.sneezing:
+          // end
+          break;
+        default:
+          break;
+      }
       break;
   }
 });
@@ -340,4 +385,12 @@ async function updateNotification(user_id) {
   }
 
   return { news_notification, pharmacy_notification };
+}
+
+function sendQuestion(chatId, symptom, question) {
+  bot.sendMessage(chatId, `У вас есть ${symptom}?`, {
+    reply_markup: {
+      inline_keyboard: question
+    }
+  });
 }
