@@ -1,6 +1,16 @@
+/*jshint esversion: 8*/
+
 kb = require('./keyboard_buttons');
+helpers = require('./helpers');
 const kbo = kb.options;
 const kbs = kb.symptoms;
+const {
+    close_txt,
+    option_txt,
+    validation_txt,
+    inform_txt,
+    faq
+} = helpers;
 
 module.exports = {
     q1A: [
@@ -344,5 +354,12 @@ module.exports = {
         [kb.questions.shit_man],
         [kb.questions.how_to_defend],
         [kb.questions.back]
+    ],
+    menu: [
+        [validation_txt],
+        [inform_txt],
+        [faq],
+        [option_txt],
+        [close_txt]
     ]
 };
