@@ -5,6 +5,9 @@ const debug = require("./helpers");
 const keyboards = require("./keyboards");
 const kb = require("./keyboard_buttons");
 
+const express = require("express");
+const app = express();
+
 const TOKEN = process.env.TOKEN;
 
 const bot = new TelegramBot(TOKEN, {
@@ -60,13 +63,13 @@ const flu_symptoms = {
 
 console.log("Бот успешно запущен!");
 
+const close_txt = "Закрыть ❌";
+const option_txt = "Настройки ⚙️";
+const validation_txt = "Я могу быть заражен?🤧\nПроверить себя";
+const inform_txt = "Информация про коронавирус";
+
 bot.on("message", msg => {
   const chatId = msg.chat.id;
-
-  const close_txt = "Закрыть ❌";
-  const option_txt = "Настройки ⚙️";
-  const validation_txt = "Я могу быть заражен?🤧\nПроверить себя";
-  const inform_txt = "Информация про коронавирус";
 
   const user_id = msg.from.id;
   const chat_id = msg.chat.id;
@@ -86,14 +89,8 @@ bot.on("message", msg => {
             inline_keyboard: [
               [
                 {
-                  text: "Выключить новости",
-                  callback_data: "news_notification_false"
-                }
-              ],
-              [
-                {
-                  text: "Выключить уведомления\nо повышении цен в аптеках",
-                  callback_data: "pharmacy_notification_false"
+                  text: "Перейти в меню",
+                  callback_data: "menu_open"
                 }
               ]
             ]
@@ -212,7 +209,13 @@ bot.on("message", msg => {
             reply_markup: {
               inline_keyboard: [
                 news_notification_option,
-                pharmacy_notification_option
+                pharmacy_notification_option,
+                [
+                  {
+                    text: "Перейти в меню",
+                    callback_data: "menu_open"
+                  }
+                ]
               ]
             }
           });
@@ -232,6 +235,12 @@ bot.on("message", msg => {
               {
                 text: "Количество людей с коронавирусом в Казахстане",
                 callback_data: "covid_count_info"
+              }
+            ],
+            [
+              {
+                text: "Перейти в меню",
+                callback_data: "menu_open"
               }
             ]
           ]
@@ -258,6 +267,14 @@ bot.on("callback_query", query => {
   userRef = db.collection("user_info").doc(String(userId));
 
   switch (query.data) {
+    case "menu_open":
+      bot.sendMessage(chatId, "Выберите действие", {
+        reply_markup: {
+          keyboard: [[validation_txt], [option_txt], [close_txt], [inform_txt]],
+          one_time_keyboard: true
+        }
+      });
+      break;
     case "covid_count_info":
       let confirmed = 9;
       let deaths = 0;
@@ -289,6 +306,12 @@ bot.on("callback_query", query => {
                   callback_data:
                     query.message.reply_markup.inline_keyboard[1][0]
                       .callback_data
+                }
+              ],
+              [
+                {
+                  text: "Перейти в меню",
+                  callback_data: "menu_open"
                 }
               ]
             ]
@@ -326,6 +349,12 @@ bot.on("callback_query", query => {
                   text: "Включить уведомления по повышении цен в аптеках",
                   callback_data: "pharmacy_notification_true"
                 }
+              ],
+              [
+                {
+                  text: "Перейти в меню",
+                  callback_data: "menu_open"
+                }
               ]
             ]
           };
@@ -362,6 +391,12 @@ bot.on("callback_query", query => {
                     query.message.reply_markup.inline_keyboard[1][0]
                       .callback_data
                 }
+              ],
+              [
+                {
+                  text: "Перейти в меню",
+                  callback_data: "menu_open"
+                }
               ]
             ]
           };
@@ -397,6 +432,12 @@ bot.on("callback_query", query => {
                 {
                   text: "Выключить уведомления по повышении цен в аптеках",
                   callback_data: "pharmacy_notification_false"
+                }
+              ],
+              [
+                {
+                  text: "Перейти в меню",
+                  callback_data: "menu_open"
                 }
               ]
             ]
@@ -530,7 +571,19 @@ bot.on("callback_query", query => {
                 100) /
                 symptoms_number}%\nПростуда: ${(cold_score * 100) /
                 symptoms_number}%\nГрипп: ${(flu_score * 100) /
-                symptoms_number}%\n\тВнимание, это всего лишь приблизительные результаты, мы настоятельно просим вас позвонить в скорую при подозрении на коронавирус!`
+                symptoms_number}%\n\тВнимание, это всего лишь приблизительные результаты, мы настоятельно просим вас позвонить в скорую при подозрении на коронавирус!`,
+              {
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      {
+                        text: "Перейти в меню",
+                        callback_data: "menu_open"
+                      }
+                    ]
+                  ]
+                }
+              }
             );
           });
 
