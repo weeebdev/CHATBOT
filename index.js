@@ -1,11 +1,9 @@
-/*jshint esversion: 8*/
 require("dotenv").config();
 let db = require("./database.js");
 const TelegramBot = require("node-telegram-bot-api");
 const helpers = require("./helpers");
 const keyboards = require("./keyboards");
 const kb = require("./keyboard_buttons");
-
 
 const TOKEN = process.env.TOKEN;
 
@@ -40,10 +38,7 @@ bot.on("message", msg => {
 
   const user_id = msg.from.id;
   const chat_id = msg.chat.id;
-  let {
-    first_name,
-    username
-  } = msg.from;
+  let { first_name, username } = msg.from;
   const date = msg.date;
   let userRef = db.collection("user_info").doc(String(user_id));
   let news_notification;
@@ -53,13 +48,16 @@ bot.on("message", msg => {
     case "/start":
       bot.sendMessage(
         chatId,
-        "Здравствуйте! Я бот, который поможет вам узнавать всю актульную информацию о COVID-19\nВсе уведомления по умолчанию включены.", {
+        "Здравствуйте! Я бот, который поможет вам узнавать всю актульную информацию о COVID-19\nВсе уведомления по умолчанию включены.",
+        {
           reply_markup: {
             inline_keyboard: [
-              [{
-                text: "Перейти в меню",
-                callback_data: "menu_open"
-              }]
+              [
+                {
+                  text: "Перейти в меню",
+                  callback_data: "menu_open"
+                }
+              ]
             ]
           }
         }
@@ -119,7 +117,8 @@ bot.on("message", msg => {
     case validation_txt:
       bot.sendMessage(
         chatId,
-        'Начинаем диагностику...\nОтвечайте на вопросы только ответами, приведенными ниже\nЕсли вашего ответа нет, отвечайте "Нет"\nУ вас есть лихорадка?', {
+        'Начинаем диагностику...\nОтвечайте на вопросы только ответами, приведенными ниже\nЕсли вашего ответа нет, отвечайте "Нет"\nУ вас есть лихорадка?',
+        {
           reply_markup: {
             inline_keyboard: keyboards.q1A
           }
@@ -137,41 +136,49 @@ bot.on("message", msg => {
           let news_notification_option = [];
           let pharmacy_notification_option = [];
 
-          // console.log(news_notification);
-          // console.log(pharmacy_notification);
 
           if (news_notification) {
-            news_notification_option = [{
-              text: "Выключить новости",
-              callback_data: "news_notification_false"
-            }];
+            news_notification_option = [
+              {
+                text: "Выключить новости",
+                callback_data: "news_notification_false"
+              }
+            ];
           } else {
-            news_notification_option = [{
-              text: "Включить новости",
-              callback_data: "news_notification_true"
-            }];
+            news_notification_option = [
+              {
+                text: "Включить новости",
+                callback_data: "news_notification_true"
+              }
+            ];
           }
 
           if (pharmacy_notification) {
-            pharmacy_notification_option = [{
-              text: "Выключить уведомления nо повышении цен в аптеках",
-              callback_data: "pharmacy_notification_false"
-            }];
+            pharmacy_notification_option = [
+              {
+                text: "Выключить уведомления nо повышении цен в аптеках",
+                callback_data: "pharmacy_notification_false"
+              }
+            ];
           } else {
-            pharmacy_notification_option = [{
-              text: "Включить уведомления nо повышении цен в аптеках",
-              callback_data: "pharmacy_notification_true"
-            }];
+            pharmacy_notification_option = [
+              {
+                text: "Включить уведомления nо повышении цен в аптеках",
+                callback_data: "pharmacy_notification_true"
+              }
+            ];
           }
           bot.sendMessage(chatId, "Настройки", {
             reply_markup: {
               inline_keyboard: [
                 news_notification_option,
                 pharmacy_notification_option,
-                [{
-                  text: "Перейти в меню",
-                  callback_data: "menu_open"
-                }]
+                [
+                  {
+                    text: "Перейти в меню",
+                    callback_data: "menu_open"
+                  }
+                ]
               ]
             }
           });
@@ -179,7 +186,6 @@ bot.on("message", msg => {
       } catch (err) {
         console.log(err);
       }
-
       break;
 
     case "/information":
@@ -187,14 +193,18 @@ bot.on("message", msg => {
       bot.sendMessage(chatId, "Что вы хотите узнать?", {
         reply_markup: {
           inline_keyboard: [
-            [{
-              text: "Количество людей с коронавирусом в Казахстане",
-              callback_data: "covid_count_info"
-            }],
-            [{
-              text: "Перейти в меню",
-              callback_data: "menu_open"
-            }]
+            [
+              {
+                text: "Количество людей с коронавирусом в Казахстане",
+                callback_data: "covid_count_info"
+              }
+            ],
+            [
+              {
+                text: "Перейти в меню",
+                callback_data: "menu_open"
+              }
+            ]
           ]
         }
       });
@@ -270,12 +280,9 @@ bot.on("message", msg => {
       bot.sendMessage(chatId, text, {
         parse_mode: "Markdown"
       });
-      bot.sendMessage(
-        chatId,
-        kb.replies.tips, {
-          parse_mode: "Markdown"
-        }
-      );
+      bot.sendMessage(chatId, kb.replies.tips, {
+        parse_mode: "Markdown"
+      });
       break;
   }
 });
@@ -283,7 +290,6 @@ bot.on("message", msg => {
 bot.on("callback_query", query => {
   const userId = query.from.id;
   const chatId = query.message.chat.id;
-  // console.log(query);
 
   userRef = db.collection("user_info").doc(String(userId));
 
@@ -300,7 +306,7 @@ bot.on("callback_query", query => {
       let types = ["Confirmed", "Deaths", "Recovered"];
       let confirmed_count, death_count, recovered_count;
       for (let type in types) {
-        countOfCovidType(types[type], function (err, res) {
+        countOfCovidType(types[type], function(err, res) {
           if (err) {
             console.log(err);
           } else {
@@ -320,9 +326,9 @@ bot.on("callback_query", query => {
               coronaRef.get().then(snapshot => {
                 if (snapshot.exists) {
                   if (
-                    snapshot.confirmed_count != confirmed_count ||
-                    snapshot.death_count != death_count ||
-                    snapshot.recovered_count != recovered_count
+                    snapshot.data().confirmed_count != confirmed_count ||
+                    snapshot.data().death_count != death_count ||
+                    snapshot.data().recovered_count != recovered_count
                   ) {
                     sendMessageToUsers("countUpdate");
                   }
@@ -352,19 +358,26 @@ bot.on("callback_query", query => {
           console.log("News notification option updated to false");
           inline_keyboard_markup = {
             inline_keyboard: [
-              [{
-                text: "Включить новости",
-                callback_data: "news_notification_true"
-              }],
-              [{
-                text: query.message.reply_markup.inline_keyboard[1][0].text,
-                callback_data: query.message.reply_markup.inline_keyboard[1][0]
-                  .callback_data
-              }],
-              [{
-                text: "Перейти в меню",
-                callback_data: "menu_open"
-              }]
+              [
+                {
+                  text: "Включить новости",
+                  callback_data: "news_notification_true"
+                }
+              ],
+              [
+                {
+                  text: query.message.reply_markup.inline_keyboard[1][0].text,
+                  callback_data:
+                    query.message.reply_markup.inline_keyboard[1][0]
+                      .callback_data
+                }
+              ],
+              [
+                {
+                  text: "Перейти в меню",
+                  callback_data: "menu_open"
+                }
+              ]
             ]
           };
           bot.editMessageReplyMarkup(inline_keyboard_markup, {
@@ -387,19 +400,26 @@ bot.on("callback_query", query => {
           console.log("Pharmacy notification option updated to false");
           inline_keyboard_markup = {
             inline_keyboard: [
-              [{
-                text: query.message.reply_markup.inline_keyboard[0][0].text,
-                callback_data: query.message.reply_markup.inline_keyboard[0][0]
-                  .callback_data
-              }],
-              [{
-                text: "Включить уведомления по повышении цен в аптеках",
-                callback_data: "pharmacy_notification_true"
-              }],
-              [{
-                text: "Перейти в меню",
-                callback_data: "menu_open"
-              }]
+              [
+                {
+                  text: query.message.reply_markup.inline_keyboard[0][0].text,
+                  callback_data:
+                    query.message.reply_markup.inline_keyboard[0][0]
+                      .callback_data
+                }
+              ],
+              [
+                {
+                  text: "Включить уведомления по повышении цен в аптеках",
+                  callback_data: "pharmacy_notification_true"
+                }
+              ],
+              [
+                {
+                  text: "Перейти в меню",
+                  callback_data: "menu_open"
+                }
+              ]
             ]
           };
           bot.editMessageReplyMarkup(inline_keyboard_markup, {
@@ -422,19 +442,26 @@ bot.on("callback_query", query => {
           console.log("News notification option updated to true");
           inline_keyboard_markup = {
             inline_keyboard: [
-              [{
-                text: "Выключить новости",
-                callback_data: "news_notification_false"
-              }],
-              [{
-                text: query.message.reply_markup.inline_keyboard[1][0].text,
-                callback_data: query.message.reply_markup.inline_keyboard[1][0]
-                  .callback_data
-              }],
-              [{
-                text: "Перейти в меню",
-                callback_data: "menu_open"
-              }]
+              [
+                {
+                  text: "Выключить новости",
+                  callback_data: "news_notification_false"
+                }
+              ],
+              [
+                {
+                  text: query.message.reply_markup.inline_keyboard[1][0].text,
+                  callback_data:
+                    query.message.reply_markup.inline_keyboard[1][0]
+                      .callback_data
+                }
+              ],
+              [
+                {
+                  text: "Перейти в меню",
+                  callback_data: "menu_open"
+                }
+              ]
             ]
           };
           bot.editMessageReplyMarkup(inline_keyboard_markup, {
@@ -457,19 +484,26 @@ bot.on("callback_query", query => {
           console.log("Pharmacy notification option updated to true");
           inline_keyboard_markup = {
             inline_keyboard: [
-              [{
-                text: query.message.reply_markup.inline_keyboard[0][0].text,
-                callback_data: query.message.reply_markup.inline_keyboard[0][0]
-                  .callback_data
-              }],
-              [{
-                text: "Выключить уведомления по повышении цен в аптеках",
-                callback_data: "pharmacy_notification_false"
-              }],
-              [{
-                text: "Перейти в меню",
-                callback_data: "menu_open"
-              }]
+              [
+                {
+                  text: query.message.reply_markup.inline_keyboard[0][0].text,
+                  callback_data:
+                    query.message.reply_markup.inline_keyboard[0][0]
+                      .callback_data
+                }
+              ],
+              [
+                {
+                  text: "Выключить уведомления по повышении цен в аптеках",
+                  callback_data: "pharmacy_notification_false"
+                }
+              ],
+              [
+                {
+                  text: "Перейти в меню",
+                  callback_data: "menu_open"
+                }
+              ]
             ]
           };
           bot.editMessageReplyMarkup(inline_keyboard_markup, {
@@ -483,115 +517,143 @@ bot.on("callback_query", query => {
         });
       break;
     default:
-      const {
-        symptom, answer
-      } = JSON.parse(query.data);
+      const { symptom, answer } = JSON.parse(query.data);
       // parse data into firebase
       switch (symptom) {
         case kb.symptoms.fever:
-          userRef.set({
-            corona_test: {
-              fever: answer
+          userRef.set(
+            {
+              corona_test: {
+                fever: answer
+              }
+            },
+            {
+              merge: true
             }
-          }, {
-            merge: true
-          });
+          );
+
           sendQuestion(chatId, kb.symptoms.cough, keyboards.q2A);
           break;
         case kb.symptoms.cough:
-          userRef.set({
-            corona_test: {
-              cough: answer
+          userRef.set(
+            {
+              corona_test: {
+                cough: answer
+              }
+            },
+            {
+              merge: true
             }
-          }, {
-            merge: true
-          });
+          );
           sendQuestion(chatId, kb.symptoms.weakness, keyboards.q3A);
           break;
         case kb.symptoms.weakness:
-          userRef.set({
-            corona_test: {
-              weakness: answer
+          userRef.set(
+            {
+              corona_test: {
+                weakness: answer
+              }
+            },
+            {
+              merge: true
             }
-          }, {
-            merge: true
-          });
+          );
           sendQuestion(chatId, kb.symptoms.shortness_of_breath, keyboards.q4A);
           break;
         case kb.symptoms.shortness_of_breath:
-          userRef.set({
-            corona_test: {
-              shortness_of_breath: answer
+          userRef.set(
+            {
+              corona_test: {
+                shortness_of_breath: answer
+              }
+            },
+            {
+              merge: true
             }
-          }, {
-            merge: true
-          });
+          );
           sendQuestion(chatId, kb.symptoms.headache, keyboards.q5A);
           break;
         case kb.symptoms.headache:
-          userRef.set({
-            corona_test: {
-              headache: answer
+          userRef.set(
+            {
+              corona_test: {
+                headache: answer
+              }
+            },
+            {
+              merge: true
             }
-          }, {
-            merge: true
-          });
+          );
           sendQuestion(chatId, kb.symptoms.body_aches, keyboards.q6A);
           break;
         case kb.symptoms.body_aches:
-          userRef.set({
-            corona_test: {
-              body_aches: answer
+          userRef.set(
+            {
+              corona_test: {
+                body_aches: answer
+              }
+            },
+            {
+              merge: true
             }
-          }, {
-            merge: true
-          });
+          );
           sendQuestion(chatId, kb.symptoms.sore_throat, keyboards.q7A);
           break;
         case kb.symptoms.sore_throat:
-          userRef.set({
-            corona_test: {
-              sore_throat: answer
+          userRef.set(
+            {
+              corona_test: {
+                sore_throat: answer
+              }
+            },
+            {
+              merge: true
             }
-          }, {
-            merge: true
-          });
+          );
           sendQuestion(chatId, kb.symptoms.chills, keyboards.q8A);
           break;
         case kb.symptoms.chills:
-          userRef.set({
-            corona_test: {
-              chills: answer
+          userRef.set(
+            {
+              corona_test: {
+                chills: answer
+              }
+            },
+            {
+              merge: true
             }
-          }, {
-            merge: true
-          });
+          );
           sendQuestion(chatId, kb.symptoms.runny_nose, keyboards.q9A);
           break;
         case kb.symptoms.runny_nose:
-          userRef.set({
-            corona_test: {
-              runny_nose: answer
+          userRef.set(
+            {
+              corona_test: {
+                runny_nose: answer
+              }
+            },
+            {
+              merge: true
             }
-          }, {
-            merge: true
-          });
+          );
           sendQuestion(chatId, kb.symptoms.sneezing, keyboards.q10A);
           break;
         case kb.symptoms.sneezing:
-          userRef.set({
-            corona_test: {
-              sneezing: answer
+          userRef.set(
+            {
+              corona_test: {
+                sneezing: answer
+              }
+            },
+            {
+              merge: true
             }
-          }, {
-            merge: true
-          });
+          );
 
           let covid_score = 0;
           let cold_score = 0;
           let flu_score = 0;
 
-          console.log(userId);
           userRef = db.collection("user_info").doc(String(userId));
           userRef.get().then(snapshot => {
             let test_results = snapshot.data().corona_test;
@@ -613,13 +675,16 @@ bot.on("callback_query", query => {
                 100) /
                 symptoms_number}%\nПростуда: ${(cold_score * 100) /
                 symptoms_number}%\nГрипп: ${(flu_score * 100) /
-                symptoms_number}%\nВнимание, это всего лишь приблизительные результаты, мы настоятельно просим вас позвонить в скорую при подозрении на коронавирус!`, {
+                symptoms_number}%\nВнимание, это всего лишь приблизительные результаты, мы настоятельно просим вас позвонить в скорую при подозрении на коронавирус!`,
+              {
                 reply_markup: {
                   inline_keyboard: [
-                    [{
-                      text: "Перейти в меню",
-                      callback_data: "menu_open"
-                    }]
+                    [
+                      {
+                        text: "Перейти в меню",
+                        callback_data: "menu_open"
+                      }
+                    ]
                   ]
                 }
               }
@@ -635,6 +700,13 @@ bot.on("callback_query", query => {
   }
 });
 
+function sendQuestion(chatId, symptom, question) {
+  bot.sendMessage(chatId, `У вас есть ${symptom}?`, {
+    reply_markup: {
+      inline_keyboard: question
+    }
+  });
+}
 
 function sendMessageToUsers(update_type) {
   if (update_type == "countUpdate") {
@@ -665,7 +737,7 @@ function sendMessageToUsers(update_type) {
                   `Изменение ситуации коронавируса в Казахстане!\n\nКоличество зараженных: ${corona[0]}\nКоличество выздоровевших: ${corona[2]}\nКоличество погибших: ${corona[1]}`
                 );
               } catch (err) {
-                console.log('error has occured');
+                console.log("error has occured");
               }
             });
           })
