@@ -9,7 +9,6 @@ const neatCsv = require("neat-csv");
 
 const TOKEN = process.env.TOKEN;
 
-
 const bot = new TelegramBot(TOKEN, {
   polling: {
     interval: 300,
@@ -367,17 +366,34 @@ bot.on("callback_query", query => {
             console.log(err);
           } else {
             if (res.type == "Confirmed") {
-              confirmed_count = res.result;
+              confirmed_count = +res.result;
             } else if (res.type == "Deaths") {
-              death_count = res.result;
+              death_count = +res.result;
             } else {
-              recovered_count = res.result;
+              recovered_count = +res.result;
             }
             if (
               confirmed_count !== undefined &&
               death_count !== undefined &&
               recovered_count !== undefined
             ) {
+              coronaRef = db.collection("corona_info").doc("covid_count");
+              coronaRef.get().then(snapshot => {
+                if (snapshot.exists) {
+                  if (
+                    snapshot.confirmed_count != confirmed_count ||
+                    snapshot.death_count != death_count ||
+                    snapshot.recovered_count != recovered_count
+                  ) {
+                    sendMessageToUsers("countUpdate");
+                  }
+                }
+                coronaRef.set({
+                  confirmed_count: confirmed_count,
+                  death_count: death_count,
+                  recovered_count: recovered_count
+                });
+              });
               bot.sendMessage(
                 chatId,
                 `Количество зараженных: ${confirmed_count}\nКоличество выздоровевших: ${recovered_count}\nКоличество погибших: ${death_count}`
@@ -788,8 +804,10 @@ function countOfCovidType(type, callback) {
           let dd = date.getDate();
           if (index[`${mm}/${dd}/${yy}`] !== undefined) {
             result = index[`${mm}/${dd}/${yy}`];
-          } else {
+          } else if (index[`${mm}/${dd - 1}/${yy}`] !== undefined) {
             result = index[`${mm}/${dd - 1}/${yy}`];
+          } else {
+            result = index[`${mm}/${dd - 2}/${yy}`];
           }
           // results.push_back(result_index);
           callback(null, { type: type, result: result });
@@ -797,4 +815,47 @@ function countOfCovidType(type, callback) {
       }
     }
   );
+}
+
+function sendMessageToUsers(update_type) {
+  if (update_type == "countUpdate") {
+    coronaRef = db.collection("corona_info").doc("covid_count");
+    coronaRef
+      .get()
+      .then(snapshot => {
+        if (snapshot.exists) {
+          let confirmed_count = snapshot.data().confirmed_count;
+          let death_count = snapshot.data().death_count;
+          let recovered_count = snapshot.data().recovered_count;
+          return [confirmed_count, death_count, recovered_count];
+        }
+      })
+      .then(corona => {
+        db.collection("user_info")
+          .where("news_notification", "==", true)
+          .get()
+          .then(snapshot => {
+            if (snapshot.empty) {
+              console.log("No matching documents.");
+              return;
+            }
+            snapshot.forEach(doc => {
+              try {
+                bot.sendMessage(
+                  doc.data().chat_id,
+                  `Изменение ситуации коронавируса в Казахстане!\n\nКоличество зараженных: ${corona[0]}\nКоличество выздоровевших: ${corona[2]}\nКоличество погибших: ${corona[1]}`
+                );
+              } catch (err) {
+                console.log('error has occured');
+              }
+            });
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
 }
