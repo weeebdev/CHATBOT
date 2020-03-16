@@ -269,8 +269,8 @@ bot.on("message", msg => {
         parse_mode: "Markdown"
       });
       break;
-    case kb.questions.shit_man:
-      text = kb.replies.shit_man;
+    case kb.questions.feces_man:
+      text = kb.replies.feces_man;
       bot.sendMessage(chatId, text, {
         parse_mode: "Markdown"
       });

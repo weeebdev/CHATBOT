@@ -351,7 +351,7 @@ module.exports = {
     faq2: [
         [kb.questions.air_virus],
         [kb.questions.no_symptoms_man],
-        [kb.questions.shit_man],
+        [kb.questions.feces_man],
         [kb.questions.how_to_defend],
         [kb.questions.back]
     ],
