@@ -330,5 +330,8 @@ module.exports = {
             }
         ]
 
+    ],
+    faq1: [
+        [kb.questions.what_is_corona]
     ]
 };
