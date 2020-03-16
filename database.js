@@ -1,5 +1,6 @@
+require("dotenv").config();
 const admin = require("firebase-admin");
-const serviceAccount = require("./corona-dbo.json");
+const serviceAccount = JSON.parse(process.env.CORONA_DBO);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
