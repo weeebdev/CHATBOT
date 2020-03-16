@@ -66,6 +66,7 @@ bot.on("message", msg => {
   const close_txt = "Закрыть ❌";
   const option_txt = "Настройки ⚙️";
   const validation_txt = "Я могу быть заражен?🤧\nПроверить себя";
+  const inform_txt = "Информация про коронавирус";
 
   const user_id = msg.from.id;
   const chat_id = msg.chat.id;
@@ -221,11 +222,28 @@ bot.on("message", msg => {
       }
 
       break;
+
+    case "/information":
+    case inform_txt:
+      bot.sendMessage(chatId, "Что вы хотите узнать?", {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "Количество людей с коронавирусом в Казахстане",
+                callback_data: "covid_count_info"
+              }
+            ]
+          ]
+        }
+      });
+      break;
+
     case "/menu":
     default:
       bot.sendMessage(chatId, "Выберите действие", {
         reply_markup: {
-          keyboard: [[validation_txt], [option_txt], [close_txt]],
+          keyboard: [[validation_txt], [option_txt], [close_txt], [inform_txt]],
           one_time_keyboard: true
         }
       });
@@ -240,6 +258,15 @@ bot.on("callback_query", query => {
   userRef = db.collection("user_info").doc(String(userId));
 
   switch (query.data) {
+    case "covid_count_info":
+      let confirmed = 9;
+      let deaths = 0;
+      let recovered = 0;
+      bot.sendMessage(
+        chatId,
+        `Количество зараженных: ${confirmed}\nКоличество выздоровевших: ${recovered}\nКоличество погибших: ${deaths}`
+      );
+      break;
     case "news_notification_false":
       // set to false
       userRef
