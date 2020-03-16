@@ -4,9 +4,8 @@ const TelegramBot = require("node-telegram-bot-api");
 const debug = require("./helpers");
 const keyboards = require("./keyboards");
 const kb = require("./keyboard_buttons");
-
-const express = require("express");
-const app = express();
+const request = require("request");
+const neatCsv = require("neat-csv");
 
 const TOKEN = process.env.TOKEN;
 
@@ -276,13 +275,33 @@ bot.on("callback_query", query => {
       });
       break;
     case "covid_count_info":
-      let confirmed = 9;
-      let deaths = 0;
-      let recovered = 0;
-      bot.sendMessage(
-        chatId,
-        `Количество зараженных: ${confirmed}\nКоличество выздоровевших: ${recovered}\nКоличество погибших: ${deaths}`
-      );
+      let types = ["Confirmed", "Deaths", "Recovered"];
+      let confirmed_count, death_count, recovered_count;
+      for (let type in types) {
+        countOfCovidType(types[type], function(err, res) {
+          if (err) {
+            console.log(err);
+          } else {
+            if (res.type == "Confirmed") {
+              confirmed_count = res.result;
+            } else if (res.type == "Deaths") {
+              death_count = res.result;
+            } else {
+              recovered_count = res.result;
+            }
+            if (
+              confirmed_count !== undefined &&
+              death_count !== undefined &&
+              recovered_count !== undefined
+            ) {
+              bot.sendMessage(
+                chatId,
+                `Количество зараженных: ${confirmed_count}\nКоличество выздоровевших: ${recovered_count}\nКоличество погибших: ${death_count}`
+              );
+            }
+          }
+        });
+      }
       break;
     case "news_notification_false":
       // set to false
@@ -615,4 +634,40 @@ function sendQuestion(chatId, symptom, question) {
       inline_keyboard: question
     }
   });
+}
+function countOfCovidType(type, callback) {
+  request(
+    {
+      url: `https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-${type}.csv`,
+      method: "GET"
+    },
+    async (err, response, body) => {
+      if (err) {
+        console.error(err);
+        console.log(response);
+        return callback(err);
+      } else {
+        let result = await neatCsv(body);
+        let index = result.find((elem, index, arr) => {
+          if (elem["Country/Region"] == "Kazakhstan") {
+            return index;
+          }
+        });
+
+        if (index !== undefined) {
+          let date = new Date();
+          let yy = date.getFullYear() % 2000;
+          let mm = date.getMonth() + 1;
+          let dd = date.getDate();
+          if (index[`${mm}/${dd}/${yy}`] !== undefined) {
+            result = index[`${mm}/${dd}/${yy}`];
+          } else {
+            result = index[`${mm}/${dd - 1}/${yy}`];
+          }
+          // results.push_back(result_index);
+          callback(null, { type: type, result: result });
+        }
+      }
+    }
+  );
 }
