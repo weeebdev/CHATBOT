@@ -21,7 +21,7 @@
     "firebase": "^7.17.2",
     "neat-csv": "^5.2.0",
     "node-telegram-bot-api": "^0.40.0",
-    "firebase-admin": "^8.10.0",
+    "firebase-admin": "^9.2.0",
     "request": "^2.88.2"
   },
   "devDependencies": {
